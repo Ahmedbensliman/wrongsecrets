@@ -97,7 +97,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |       
-          mvn -B package -DskipTests -Ddependency-check.skip=true \
+          mvn -B verify -DskipTests -Ddependency-check.skip=true \
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=Ahmedbensliman_wrongsecrets \
             -Dsonar.organization=ahmedbensliman \
