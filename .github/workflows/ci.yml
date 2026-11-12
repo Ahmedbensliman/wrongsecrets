@@ -96,9 +96,13 @@ jobs:
       - name: SonarQube Cloud scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          mvn -B verify -DskipTests \
+        run: |       
+          mvn -B package -DskipTests -Ddependency-check.skip=true \
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=Ahmedbensliman_wrongsecrets \
             -Dsonar.organization=ahmedbensliman \
             -Dsonar.host.url=https://sonarcloud.io
+          mvn -B verify -DskipTests \
+            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=Ahmedbensliman_wrongsecrets \
+            -Dsonar.organization=ahmedbe
