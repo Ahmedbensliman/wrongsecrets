@@ -130,8 +130,11 @@ jobs:
             -Dsonar.projectKey=Ahmedbensliman_wrongsecrets \
             -Dsonar.organization=ahmedbensliman \
             -Dsonar.host.url=https://sonarcloud.io
+  
+  # 6) DAST (deploy + active attack with ZAP)
   dast:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     needs: [trivy, dependency-check, sonarqube]
     steps:
       - name: Deploy WrongSecrets
@@ -146,12 +149,13 @@ jobs:
           docker logs wrongsecrets
           exit 1
 
-      - name: ZAP baseline scan (report only)
+      # Active scan: sends real attack payloads. Only run it on your own container.
+      - name: ZAP full scan (active, report only)
         run: |
           mkdir -p zap && chmod 777 zap
           docker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" \
-            ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
-            -t http://localhost:8080 -r zap-report.html -I
+            ghcr.io/zaproxy/zaproxy:stable zap-full-scan.py \
+            -t http://localhost:8080 -r zap-report.html -m 5 -I
 
       - name: Upload report
         if: always()
